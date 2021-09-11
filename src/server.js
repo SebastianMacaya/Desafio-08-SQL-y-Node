@@ -12,7 +12,8 @@ const PORT = 8080;
 import { createServer } from "http";
 import { Server } from "socket.io";
 
-const httpServer = createServer();
+const app = express();
+const httpServer = createServer(app);
 const io = new Server(httpServer, {
   // ...
 });
@@ -24,8 +25,6 @@ io.on("connection", (socket) => {
     socket.id
   );
 });
-const app = express();
-const server = createServer(app);
 
 /* ------------------------------- middleware ------------------------------- */
 
@@ -40,6 +39,6 @@ app.use(express.static("public"));
 app.use("/users", routerUsuarios);
 app.use("/", routerChat);
 
-server.listen(PORT, () =>
+httpServer.listen(PORT, () =>
   console.log(emoji.get("computer"), `Server on port ${PORT}`)
 );
