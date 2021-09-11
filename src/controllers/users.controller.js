@@ -1,9 +1,10 @@
 import * as userService from "../services/users.service.js";
+
 export async function createUser(req, res) {
   const { body } = req;
   try {
     await userService.createUser(body);
-    res.status(200).send("Usuario Creado");
+    res.status(200).send("Usuario creado!");
   } catch (error) {
     res.status(400).send(error.message);
   }

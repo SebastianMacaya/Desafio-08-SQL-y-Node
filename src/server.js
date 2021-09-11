@@ -24,6 +24,9 @@ io.on("connection", (socket) => {
     "Nuevo usuario conectado",
     socket.id
   );
+  socket.on("disconnect", () => {
+    console.log(emoji.get("poop"), "usuario desconectado", socket.id);
+  });
 });
 
 /* ------------------------------- middleware ------------------------------- */
@@ -39,6 +42,7 @@ app.use(express.static("public"));
 app.use("/users", routerUsuarios);
 app.use("/", routerChat);
 
+/* --------------------------------- server --------------------------------- */
 httpServer.listen(PORT, () =>
   console.log(emoji.get("computer"), `Server on port ${PORT}`)
 );

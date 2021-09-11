@@ -1,3 +1,4 @@
+import router from "../routers/chat.router.js";
 import * as chatService from "../services/chat.service.js";
 
 //MOSTRAR TODOS LOS MENSAJES
