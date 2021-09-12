@@ -1,6 +1,5 @@
 import "./db.js";
 import express from "express";
-import routerUsuarios from "./routers/users.router.js";
 import routerChat from "./routers/chat.router.js";
 import morgan from "morgan";
 import emoji from "node-emoji";
@@ -19,8 +18,7 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   // ...
 });
-//traigo todos los mensajes
-const mensajes = await chatController.getAllMessages();
+const mensajes = await chatController.getAllMessages(); //traigo todos los mensajes
 io.on("connection", (socket) => {
   console.log(
     emoji.get("white_check_mark"),
@@ -54,7 +52,6 @@ app.use("/static", express.static(import.meta.url + "/public"));
 app.use(express.static("public"));
 
 /* --------------------------------- Routes --------------------------------- */
-app.use("/users", routerUsuarios);
 app.use("/", routerChat);
 /* --------------------------------- server --------------------------------- */
 httpServer.listen(PORT, () =>

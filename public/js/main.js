@@ -70,9 +70,9 @@ messageForm.addEventListener("submit", (e) => {
   message.focus();
 });
 //VER QUE TRAE MENSAJES DESDE EL BACK
-socket.on("pepe", (mensajes) => {
+/* socket.on("mensajes", (mensajes) => {
   console.log(mensajes);
-});
+}); */
 
 socket.on("mensajes", (msg) => {
   const html = listaMensajes(msg);
