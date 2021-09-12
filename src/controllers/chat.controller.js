@@ -5,7 +5,6 @@ export async function getAllMessages(req, res) {
   try {
     const chat = await chatService.getAllMessages();
     return { chat }.chat;
-    //res.status(200).json({ chat });
   } catch (error) {
     res.status(400).send(error.message);
   }

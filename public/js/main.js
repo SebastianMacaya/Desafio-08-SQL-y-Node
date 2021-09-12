@@ -5,7 +5,7 @@ const socket = io();
 const title = document.getElementById("title");
 const price = document.getElementById("price");
 const url = document.getElementById("url");
-/* const productForm = document.getElementById("productForm");
+const productForm = document.getElementById("productForm");
 
 productForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -41,7 +41,7 @@ const tableRows = (products) =>
     `
     )
     .reverse();
- */
+
 // Mensajes :
 
 //Leer valores por Id :
