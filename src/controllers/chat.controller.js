@@ -1,11 +1,11 @@
-import router from "../routers/chat.router.js";
 import * as chatService from "../services/chat.service.js";
 
 //MOSTRAR TODOS LOS MENSAJES
 export async function getAllMessages(req, res) {
   try {
     const chat = await chatService.getAllMessages();
-    res.status(200).json({ chat });
+    return { chat }.chat;
+    //res.status(200).json({ chat });
   } catch (error) {
     res.status(400).send(error.message);
   }
