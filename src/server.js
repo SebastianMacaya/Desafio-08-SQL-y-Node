@@ -12,14 +12,14 @@ const PORT = 8080;
 
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { getAllMessages } from "./services/chat.service.js";
+import { getAllMessages, saveMessage } from "./services/chat.service.js";
 
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   // ...
 });
-
+//traigo todos los mensajes
 const mensajes = await chatController.getAllMessages();
 io.on("connection", (socket) => {
   console.log(
@@ -37,8 +37,10 @@ io.on("connection", (socket) => {
   socket.on("nuevoMensaje", async (msg) => {
     msg.fyh = new Date().toLocaleString();
 
-    await mensajes.createMessage(msg); //Guardo los nuevos mensajes
-    io.sockets.emit("mensajes", mensajes);
+    await saveMessage(msg); //Guardo los nuevos mensajes
+    const mensajes = await chatController.getAllMessages(); //vuelvo a traer mensajes de la base de datos
+
+    io.sockets.emit("mensajes", mensajes); //envio al front
   });
 });
 

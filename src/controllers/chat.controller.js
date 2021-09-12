@@ -32,3 +32,11 @@ export async function deleteMessage(req, res) {
     res.status(400).send(error.message);
   }
 }
+
+export async function saveMessage(msg) {
+  try {
+    await chatService.saveMessage(msg);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+}

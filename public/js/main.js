@@ -69,7 +69,8 @@ messageForm.addEventListener("submit", (e) => {
   messageForm.reset();
   message.focus();
 });
-socket.on("mensajes", (mensajes) => {
+//VER QUE TRAE MENSAJES DESDE EL BACK
+socket.on("pepe", (mensajes) => {
   console.log(mensajes);
 });
 

@@ -25,3 +25,12 @@ export async function deleteMessage(chatId) {
     throw new Error(error);
   }
 }
+
+export async function saveMessage(data) {
+  try {
+    await db("chat").insert(data);
+    return;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
