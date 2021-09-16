@@ -8,6 +8,9 @@ DBUSER=
 DBPASSWORD=
 DB=knex
 
+Crear Tablas
+node crearTablas
+
 Scripts
 use knex;
 drop  table if exists chat,ecommerce ;
