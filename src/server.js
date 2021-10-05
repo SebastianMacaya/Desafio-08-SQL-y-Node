@@ -5,6 +5,8 @@ import morgan from "morgan";
 import emoji from "node-emoji";
 import * as chatController from "./controllers/chat.controller.js";
 import * as ecommerceController from "./controllers/ecommerce.controller.js";
+import faker from "faker";
+faker.locale = "es";
 
 const PORT = 8080;
 
@@ -69,6 +71,20 @@ app.use(express.static("public"));
 
 /* --------------------------------- Routes --------------------------------- */
 app.use("/", routerChat);
+
+app.use("/api/productos-test", (req, res) => {
+  const products = [];
+  for (let i = 0; i < 5; i++) {
+    const product = {};
+    product.title = faker.commerce.productName();
+
+    product.price = faker.commerce.price();
+
+    product.url = faker.image.imageUrl();
+    products.push(product);
+  }
+  res.status(200).json({ products });
+});
 /* --------------------------------- server --------------------------------- */
 httpServer.listen(PORT, () =>
   console.log(emoji.get("computer"), `Server on port ${PORT}`)

@@ -27,7 +27,9 @@ socket.on("productos", (products) => {
   const html = tableRows(products);
   document.getElementById("listaProductos").innerHTML = html;
 });
-
+/* socket.on("productos", (productos) => {
+  console.log(productos);
+}); */
 const tableRows = (products) =>
   products
     .map(
@@ -91,3 +93,34 @@ const listaMensajes = (mensajes) =>
     `
     )
     .join(" ");
+
+/* fetch("http://localhost:8080/api/productos-test")
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+ */
+
+document.addEventListener("DOMContentLoaded", (e) => {
+  fetchData();
+});
+
+/* -------------------------------------------------------------------------- */
+/*                                  fake data                                 */
+/* -------------------------------------------------------------------------- */
+
+const fetchData = async () => {
+  const res = await fetch("http://localhost:8080/api/productos-test");
+  const { products } = await res.json();
+  const test = (products) =>
+    products.map(
+      (prod) =>
+        `
+        <tr>
+            <td><h3>${prod.title}</h3></td>
+            <td><h4>$${prod.price}</h4></td>
+            <td><img class="img-thumbnail" src=${prod.url}></td>        
+        </tr>
+    `
+    );
+  const html = test(products);
+  document.getElementById("listaProductosFake").innerHTML = html;
+};
