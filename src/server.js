@@ -1,91 +1,62 @@
-import "./db.js";
 import express from "express";
-import routerChat from "./routers/chat.router.js";
-import morgan from "morgan";
 import emoji from "node-emoji";
-import * as chatController from "./controllers/chat.controller.js";
-import * as ecommerceController from "./controllers/ecommerce.controller.js";
-import faker from "faker";
-faker.locale = "es";
+import cors from "cors";
+import dotenv from "dotenv";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import handlebars from "express-handlebars";
+import path from "path";
+const __dirname = path.resolve();
+dotenv.config();
 
-const PORT = 8080;
-
-/* -------------------------------- socket io ------------------------------- */
-
-import { createServer } from "http";
-import { Server } from "socket.io";
-import { getAllMessages, saveMessage } from "./services/chat.service.js";
-import { getAllProducts, saveProduct } from "./services/ecommerce.service.js";
+import { router } from "./routers/router.js";
 
 const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  // ...
-});
-const mensajes = await chatController.getAllMessages(); //traigo todos los mensajes
-const contProductos = await ecommerceController.getAllProducts(); //traigo todos los productos
+app.use(express.static(__dirname + "/public"));
 
-io.on("connection", (socket) => {
-  console.log(
-    emoji.get("white_check_mark"),
-    "Nuevo usuario conectado",
-    socket.id
-  );
-  socket.on("disconnect", () => {
-    console.log(emoji.get("poop"), "usuario desconectado", socket.id);
-  });
-  //Enviar desde el back end al front
-  socket.emit("mensajes", mensajes);
-
-  //recibo nuevo mensaje desde el front
-  socket.on("nuevoMensaje", async (msg) => {
-    msg.fyh = new Date().toLocaleString();
-
-    await saveMessage(msg); //Guardo los nuevos mensajes
-    const mensajes = await chatController.getAllMessages(); //vuelvo a traer mensajes de la base de datos
-
-    io.sockets.emit("mensajes", mensajes); //envio al front
-  });
-
-  /* -------------------------------- ecommerce ------------------------------- */
-  socket.emit("productos", contProductos);
-
-  // Leer desde el cliente la carga de un nuevo producto:
-
-  socket.on("nuevoProducto", async (producto) => {
-    await saveProduct(producto); //guardo los productos que vienen del front
-    const contProductos = await ecommerceController.getAllProducts(); //traigo todos los productos
-
-    io.emit("productos", contProductos); //envio los productos actualizados al front
-  });
-});
-
-/* ------------------------------- middleware ------------------------------- */
-
-app.use(morgan("dev"));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/static", express.static(import.meta.url + "/public"));
-app.use(express.static("public"));
-
-/* --------------------------------- Routes --------------------------------- */
-app.use("/", routerChat);
-
-app.use("/api/productos-test", (req, res) => {
-  const products = [];
-  for (let i = 0; i < 5; i++) {
-    const product = {};
-    product.title = faker.commerce.productName();
-
-    product.price = faker.commerce.price();
-
-    product.url = faker.image.imageUrl();
-    products.push(product);
-  }
-  res.status(200).json({ products });
-});
-/* --------------------------------- server --------------------------------- */
-httpServer.listen(PORT, () =>
-  console.log(emoji.get("computer"), `Server on port ${PORT}`)
+app.engine(
+  "hbs",
+  handlebars({
+    extname: "hbs",
+    defaultLayout: "index.hbs",
+    layoutsDir: __dirname + "/src/views/layouts",
+    partialsDir: __dirname + "/src/views/partials",
+  })
 );
+
+app.set("views", "./src/views");
+app.set("view engine", "hbs");
+
+const options = {
+  userNewUrlParser: true,
+  useUnifiedTopology: true,
+};
+
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      options: options,
+    }),
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.SECRET,
+    cookie: {
+      maxAge: 60000,
+    },
+    rolling: true,
+  })
+);
+
+const PORT = 8080;
+app.use(router);
+
+const server = app.listen(PORT, () => {
+  console.log(`${emoji.get("computer")}Server on localhost + port : ${PORT}`);
+});
+
+server.on("error", (error) => console.log(error));
