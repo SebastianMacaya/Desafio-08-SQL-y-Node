@@ -1,0 +1,46 @@
+<div class="container">
+    <a href="/logout"> Cerrar sesion</a>
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Producto</th>
+                <th scope="col">Precio</th>
+                <th scope="col">PictureURL</th>
+            </tr>
+        </thead>
+        <tbody id="info">
+            <tr>
+                <th scope="row">1</th>
+                <td>Offline</td>
+                <td>Offline</td>
+                <td>Offline</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+</div>
+<script>
+    const info = document.getElementById("info");
+        
+        fetch("http://localhost:8080/productos-test")
+            .then((response) => response.json())
+            .then((data) => {
+                let html = "";
+                data.prods.forEach((element) => {
+                    html += `
+  <tr >
+  <th scope="row">${element.id}</th>
+  <td>${element.name}</td>
+  <td>${element.price}</td>
+  <td> <img src="${element.pictureURL}" alt="" width="100"></td>
+</tr>
+
+  `;
+                });
+
+                info.innerHTML = html;
+            });
+
+</script>

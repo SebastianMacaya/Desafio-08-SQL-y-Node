@@ -6,7 +6,7 @@ class ProdTest {
   async getProducts() {
     try {
       const prods = [];
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 10; i++) {
         const prod = {
           id: i + 1,
           ...generateProduct(),
